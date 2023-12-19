@@ -1,6 +1,10 @@
 #!/usr/bin/env node
-import * as cdk from 'aws-cdk-lib';
-import { CdkWorkshopStack } from '../lib/cdk-workshop-stack';
-
+import * as cdk from "aws-cdk-lib";
+import { EcsStack } from "../lib/cdk-workshop-stack";
+import { DynamoDBStack } from "../lib/DynamoDBStack";
 const app = new cdk.App();
-new CdkWorkshopStack(app, 'CdkWorkshopStack');
+
+const dynamoDbStack = new DynamoDBStack(app, "DBStack");
+new EcsStack(app, "EcsStackV6", {
+  dynamoDbStack,
+});
