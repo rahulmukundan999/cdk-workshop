@@ -1,10 +1,6 @@
 #!/usr/bin/env node
 import * as cdk from "aws-cdk-lib";
-import { EcsStack } from "../lib/cdk-workshop-stack";
-import { DynamoDBStack } from "../lib/DynamoDBStack";
-const app = new cdk.App();
+import { S3BucketStack } from "../lib/cdk-workshop-stack";
 
-const dynamoDbStack = new DynamoDBStack(app, "DBStack");
-new EcsStack(app, "EcsStackV6", {
-  dynamoDbStack,
-});
+const app = new cdk.App();
+new S3BucketStack(app, "S3Stack");

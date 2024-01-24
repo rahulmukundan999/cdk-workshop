@@ -9,7 +9,9 @@
     "start": "node index.js",
     "watch": "tsc -w",
     "test": "jest",
-    "cdk": "cdk"
+    "cdk": "cdk",
+    "synth": "cdk synth",
+    "deploy": "cdk deploy"
   },
   "devDependencies": {
     "@types/jest": "^29.5.11",
