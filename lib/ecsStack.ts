@@ -20,7 +20,7 @@ export class MyEcsStack extends cdk.Stack {
 
     // ECS Container
     const container = taskDefinition.addContainer("MyNodejsApp", {
-      image: ContainerImage.fromAsset("../server"), // Adjust the path to your Dockerfile
+      image: ContainerImage.fromAsset("./server"), // Adjust the path to your Dockerfile
       portMappings: [{ containerPort: 3000 }],
     });
 
