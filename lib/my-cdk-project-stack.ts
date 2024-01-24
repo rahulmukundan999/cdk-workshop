@@ -70,7 +70,7 @@ export class MyPipelineStack extends cdk.Stack {
             commands: ["npm install -g aws-cdk", "npm install"],
           },
           build: {
-            commands: ["cdk deploy --require-approval never"],
+            commands: ["cdk deploy --require-approval never --all"],
           },
         },
       }),
