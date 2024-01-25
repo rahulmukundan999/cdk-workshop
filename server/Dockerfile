@@ -1,4 +1,4 @@
-FROM --platform=linux/amd64 node:18.14-alpine
+FROM node:18.14-alpine
 
 WORKDIR /app
 
@@ -9,6 +9,8 @@ RUN npm install
 
 COPY . .
 
+RUN ls
+
 EXPOSE 3000
 
-CMD ["node", "app.js"]
+CMD ["node", "server/app.js"]
