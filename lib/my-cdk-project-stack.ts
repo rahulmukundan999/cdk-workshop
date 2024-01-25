@@ -12,6 +12,7 @@ import {
   Project,
   ProjectProps,
 } from "aws-cdk-lib/aws-codebuild";
+import * as iam from "aws-cdk-lib/aws-iam";
 
 export class MyPipelineStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -30,9 +31,14 @@ export class MyPipelineStack extends cdk.Stack {
       trigger: GitHubTrigger.WEBHOOK,
     });
 
+    const cdkSynthProjectRole = new iam.Role(this, "CdkSynthProjectRole", {
+      assumedBy: new iam.ServicePrincipal("codebuild.amazonaws.com"),
+    });
+
     // CodeBuild project for cdk synth
     const cdkSynthProject = new Project(this, "CdkSynthProject", {
       projectName: "cdk-synth-project",
+      role: cdkSynthProjectRole,
       environment: {
         buildImage: LinuxBuildImage.STANDARD_5_0,
       },
@@ -40,7 +46,11 @@ export class MyPipelineStack extends cdk.Stack {
         version: "0.2",
         phases: {
           pre_build: {
-            commands: ["npm install -g aws-cdk", "npm install"],
+            commands: [
+              "npm install -g aws-cdk",
+              "npm install",
+              "cdk bootstrap",
+            ],
           },
           build: {
             commands: ["cdk synth"],
@@ -48,6 +58,10 @@ export class MyPipelineStack extends cdk.Stack {
         },
       }),
     });
+
+    cdkSynthProjectRole.addManagedPolicy(
+      iam.ManagedPolicy.fromAwsManagedPolicyName("AdministratorAccess")
+    );
 
     // CodeBuild action for cdk synth
     const cdkSynthAction = new CodeBuildAction({
