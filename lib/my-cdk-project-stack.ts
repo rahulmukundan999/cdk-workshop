@@ -35,6 +35,9 @@ export class MyPipelineStack extends cdk.Stack {
       assumedBy: new iam.ServicePrincipal("codebuild.amazonaws.com"),
     });
 
+    cdkSynthProjectRole.addManagedPolicy(
+      iam.ManagedPolicy.fromAwsManagedPolicyName("AdministratorAccess")
+    );
     // CodeBuild project for cdk synth
     const cdkSynthProject = new Project(this, "CdkSynthProject", {
       projectName: "cdk-synth-project",
@@ -59,10 +62,6 @@ export class MyPipelineStack extends cdk.Stack {
       }),
     });
 
-    cdkSynthProjectRole.addManagedPolicy(
-      iam.ManagedPolicy.fromAwsManagedPolicyName("AdministratorAccess")
-    );
-
     // CodeBuild action for cdk synth
     const cdkSynthAction = new CodeBuildAction({
       actionName: "CdkSynth",
@@ -71,9 +70,18 @@ export class MyPipelineStack extends cdk.Stack {
       outputs: [new Artifact("CdkSynthOutput")],
     });
 
+    const cdkDeployProjectRole = new iam.Role(this, "cdkDeployProjectRole", {
+      assumedBy: new iam.ServicePrincipal("codebuild.amazonaws.com"),
+    });
+
+    cdkDeployProjectRole.addManagedPolicy(
+      iam.ManagedPolicy.fromAwsManagedPolicyName("AdministratorAccess")
+    );
+
     // CodeBuild project for cdk deploy
     const cdkDeployProject = new Project(this, "CdkDeployProject", {
       projectName: "cdk-deploy-project",
+      role: cdkDeployProjectRole,
       environment: {
         buildImage: LinuxBuildImage.STANDARD_5_0,
       },
