@@ -1,6 +1,11 @@
 import * as cdk from "aws-cdk-lib";
 import { Construct } from "constructs";
-import { ContainerImage, FargateService, Cluster } from "aws-cdk-lib/aws-ecs";
+import {
+  ContainerImage,
+  FargateService,
+  Cluster,
+  LogDriver,
+} from "aws-cdk-lib/aws-ecs";
 import { FargateTaskDefinition } from "aws-cdk-lib/aws-ecs";
 import {
   ApplicationLoadBalancer,
@@ -22,6 +27,7 @@ export class MyEcsStack extends cdk.Stack {
     const container = taskDefinition.addContainer("MyNodejsApp", {
       image: ContainerImage.fromAsset("./server"), // Adjust the path to your Dockerfile
       portMappings: [{ containerPort: 3000 }],
+      logging: LogDriver.awsLogs({ streamPrefix: "MyNodejsApp" }), // Enable CloudWatch Logs
     });
 
     // ECS Service
